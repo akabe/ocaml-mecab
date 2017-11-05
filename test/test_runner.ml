@@ -187,6 +187,7 @@ let suite =
     "nbest_init2" >:: test_nbest_init2;
     "nbest_next_tostr" >:: test_nbest_next_tostr;
     "nbest_next_tonode" >:: test_nbest_next_tonode;
+    Test_lattice.suite;
   ]
 
 let () = run_test_tt_main suite

@@ -125,6 +125,9 @@ external nbest_next_tostr : t -> string
 external nbest_next_tonode : t -> node list
   = "mecab_nbest_next_tonode_stub"
 
+external parse_lattice : t -> Lattice.t -> bool
+  = "ml_mecab_parse_lattice"
+
 (** {2 Dictionary information} *)
 
 type dictionary_type =
