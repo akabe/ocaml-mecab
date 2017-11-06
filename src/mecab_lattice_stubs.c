@@ -28,12 +28,12 @@ mecab_lattice_finalize(value ml_lattice) {
 }
 
 static struct custom_operations mecab_lattice_ops = {
- identifier:  "mecab_lattice_t",
- finalize:    mecab_lattice_finalize,
- compare:     custom_compare_default,
- hash:        custom_hash_default,
- serialize:   custom_serialize_default,
- deserialize: custom_deserialize_default
+  .identifier =  "mecab_lattice_t",
+  .finalize =    mecab_lattice_finalize,
+  .compare =     custom_compare_default,
+  .hash =        custom_hash_default,
+  .serialize =   custom_serialize_default,
+  .deserialize = custom_deserialize_default
 };
 
 CAMLprim value
