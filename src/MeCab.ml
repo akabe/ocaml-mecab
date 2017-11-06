@@ -63,67 +63,67 @@ type node =
 [@@deriving sexp]
 
 external create : string array -> t
-  = "mecab_create_stub"
+  = "ml_mecab_create"
 
 external create2 : string -> t
-  = "mecab_create2_stub"
+  = "ml_mecab_create2"
 
 external strerror : t -> string
-  = "mecab_strerror_stub"
+  = "ml_mecab_strerror"
 
 external get_partial : t -> bool
-  = "mecab_get_partial_stub"
+  = "ml_mecab_get_partial"
 
 external set_partial : t -> bool -> unit
-  = "mecab_set_partial_stub"
+  = "ml_mecab_set_partial"
 
 external get_theta : t -> float
-  = "mecab_get_theta_stub"
+  = "ml_mecab_get_theta"
 
 external set_theta : t -> float -> unit
-  = "mecab_set_theta_stub"
+  = "ml_mecab_set_theta"
 
 external get_lattice_level : t -> lattice_level
-  = "mecab_get_lattice_level_stub"
+  = "ml_mecab_get_lattice_level"
 
 external set_lattice_level : t -> lattice_level -> unit
-  = "mecab_set_lattice_level_stub"
+  = "ml_mecab_set_lattice_level"
 
 external get_all_morphs : t -> bool
-  = "mecab_get_all_morphs_stub"
+  = "ml_mecab_get_all_morphs"
 
 external set_all_morphs : t -> bool -> unit
-  = "mecab_set_all_morphs_stub"
+  = "ml_mecab_set_all_morphs"
 
 external sparse_tostr : t -> string -> string
-  = "mecab_sparse_tostr_stub"
+  = "ml_mecab_sparse_tostr"
 
 external sparse_tostr2 : t -> string -> int -> string
-  = "mecab_sparse_tostr2_stub"
+  = "ml_mecab_sparse_tostr2"
 
 external sparse_tonode : t -> string -> node list
-  = "mecab_sparse_tonode_stub"
+  = "ml_mecab_sparse_tonode"
 
 external sparse_tonode2 : t -> string -> int -> node list
-  = "mecab_sparse_tonode2_stub"
+  = "ml_mecab_sparse_tonode2"
 
 external nbest_sparse_tostr : t -> n:int -> string -> string
-  = "mecab_nbest_sparse_tostr_stub"
+  = "ml_mecab_nbest_sparse_tostr"
 
 external nbest_sparse_tostr2 : t -> n:int -> string -> int -> string
-  = "mecab_nbest_sparse_tostr2_stub"
+  = "ml_mecab_nbest_sparse_tostr2"
 
 external nbest_init : t -> string -> unit
-  = "mecab_nbest_init_stub"
+  = "ml_mecab_nbest_init"
 
 external nbest_init2 : t -> string -> int -> unit
-  = "mecab_nbest_init2_stub"
+  = "ml_mecab_nbest_init2"
 
 external nbest_next_tostr : t -> string
-  = "mecab_nbest_next_tostr_stub"
+  = "ml_mecab_nbest_next_tostr"
 
 external nbest_next_tonode : t -> node list
-  = "mecab_nbest_next_tonode_stub"
+  = "ml_mecab_nbest_next_tonode"
 
 external parse_lattice : t -> Lattice.t -> bool
   = "ml_mecab_parse_lattice"

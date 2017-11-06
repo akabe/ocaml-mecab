@@ -88,21 +88,21 @@ caml_copy_mecab_node(const mecab_node_t *node) {
 }
 
 static void
-mecab_finalize(value ml_mecab) {
+ml_mecab_finalize(value ml_mecab) {
   mecab_destroy(Mecab_val(ml_mecab));
 }
 
 static struct custom_operations mecab_t_ops = {
- identifier:  "mecab_t",
- finalize:    mecab_finalize,
- compare:     custom_compare_default,
- hash:        custom_hash_default,
- serialize:   custom_serialize_default,
- deserialize: custom_deserialize_default
+  .identifier =  "mecab_t",
+  .finalize =    ml_mecab_finalize,
+  .compare =     custom_compare_default,
+  .hash =        custom_hash_default,
+  .serialize =   custom_serialize_default,
+  .deserialize = custom_deserialize_default
 };
 
 static value
-mecab_create_or_die(mecab_t * mecab) {
+ml_mecab_create_or_die(mecab_t * mecab) {
   CAMLparam0();
   CAMLlocal1(ml_mecab);
 
@@ -120,82 +120,82 @@ mecab_create_or_die(mecab_t * mecab) {
 }
 
 CAMLprim value
-mecab_create_stub(value ml_argv) {
+ml_mecab_create(value ml_argv) {
   CAMLparam1(ml_argv);
 
   int argc = Wosize_val(ml_argv);
   char *argv[argc];
   for (int i = 0; i < argc; ++i) argv[i] = String_val(Field(ml_argv, i));
 
-  CAMLreturn(mecab_create_or_die(mecab_new(argc, argv)));
+  CAMLreturn(ml_mecab_create_or_die(mecab_new(argc, argv)));
 }
 
 CAMLprim value
-mecab_create2_stub(value ml_argv) {
+ml_mecab_create2(value ml_argv) {
   CAMLparam1(ml_argv);
-  CAMLreturn(mecab_create_or_die(mecab_new2(String_val(ml_argv))));
+  CAMLreturn(ml_mecab_create_or_die(mecab_new2(String_val(ml_argv))));
 }
 
 CAMLprim value
-mecab_strerror_stub(value ml_mecab) {
+ml_mecab_strerror(value ml_mecab) {
   CAMLparam1(ml_mecab);
   CAMLreturn(caml_copy_string(mecab_strerror(Mecab_val(ml_mecab))));
 }
 
 CAMLprim value
-mecab_get_partial_stub(value ml_mecab) {
+ml_mecab_get_partial(value ml_mecab) {
   CAMLparam1(ml_mecab);
   CAMLreturn(Val_bool(mecab_get_partial(Mecab_val(ml_mecab))));
 }
 
 CAMLprim value
-mecab_set_partial_stub(value ml_mecab, value ml_partial) {
+ml_mecab_set_partial(value ml_mecab, value ml_partial) {
   CAMLparam2(ml_mecab, ml_partial);
   mecab_set_partial(Mecab_val(ml_mecab), Bool_val(ml_partial));
   CAMLreturn(Val_unit);
 }
 
 CAMLprim value
-mecab_get_theta_stub(value ml_mecab) {
+ml_mecab_get_theta(value ml_mecab) {
   CAMLparam1(ml_mecab);
   CAMLreturn(caml_copy_double(mecab_get_theta(Mecab_val(ml_mecab))));
 }
 
 CAMLprim value
-mecab_set_theta_stub(value ml_mecab, value ml_theta) {
+ml_mecab_set_theta(value ml_mecab, value ml_theta) {
   CAMLparam2(ml_mecab, ml_theta);
   mecab_set_theta(Mecab_val(ml_mecab), Double_val(ml_theta));
   CAMLreturn(Val_unit);
 }
 
 CAMLprim value
-mecab_get_lattice_level_stub(value ml_mecab) {
+ml_mecab_get_lattice_level(value ml_mecab) {
   CAMLparam1(ml_mecab);
   CAMLreturn(Val_int(mecab_get_lattice_level(Mecab_val(ml_mecab))));
 }
 
 CAMLprim value
-mecab_set_lattice_level_stub(value ml_mecab, value ml_lattice_level) {
+ml_mecab_set_lattice_level(value ml_mecab, value ml_lattice_level) {
   CAMLparam2(ml_mecab, ml_lattice_level);
   mecab_set_lattice_level(Mecab_val(ml_mecab), Int_val(ml_lattice_level));
   CAMLreturn(Val_unit);
 }
 
 CAMLprim value
-mecab_get_all_morphs_stub(value ml_mecab) {
+ml_mecab_get_all_morphs(value ml_mecab) {
   CAMLparam1(ml_mecab);
   CAMLreturn(Val_bool(mecab_get_all_morphs(Mecab_val(ml_mecab))));
 }
 
 CAMLprim value
-mecab_set_all_morphs_stub(value ml_mecab, value ml_all_morphs) {
+ml_mecab_set_all_morphs(value ml_mecab, value ml_all_morphs) {
   CAMLparam2(ml_mecab, ml_all_morphs);
   mecab_set_all_morphs(Mecab_val(ml_mecab), Bool_val(ml_all_morphs));
   CAMLreturn(Val_unit);
 }
 
 CAMLprim value
-mecab_sparse_tostr_stub(value ml_mecab, value ml_str) {
+ml_mecab_sparse_tostr(value ml_mecab, value ml_str) {
   CAMLparam2(ml_mecab, ml_str);
 
   mecab_t *mecab = Mecab_val(ml_mecab);
@@ -207,7 +207,7 @@ mecab_sparse_tostr_stub(value ml_mecab, value ml_str) {
 }
 
 CAMLprim value
-mecab_sparse_tostr2_stub(value ml_mecab, value ml_str, value ml_len) {
+ml_mecab_sparse_tostr2(value ml_mecab, value ml_str, value ml_len) {
   CAMLparam3(ml_mecab, ml_str, ml_len);
 
   mecab_t *mecab = Mecab_val(ml_mecab);
@@ -219,7 +219,7 @@ mecab_sparse_tostr2_stub(value ml_mecab, value ml_str, value ml_len) {
 }
 
 CAMLprim value
-mecab_sparse_tonode_stub(value ml_mecab, value ml_str) {
+ml_mecab_sparse_tonode(value ml_mecab, value ml_str) {
   CAMLparam2(ml_mecab, ml_str);
 
   mecab_t *mecab = Mecab_val(ml_mecab);
@@ -230,7 +230,7 @@ mecab_sparse_tonode_stub(value ml_mecab, value ml_str) {
 }
 
 CAMLprim value
-mecab_sparse_tonode2_stub(value ml_mecab, value ml_str, value ml_len) {
+ml_mecab_sparse_tonode2(value ml_mecab, value ml_str, value ml_len) {
   CAMLparam3(ml_mecab, ml_str, ml_len);
 
   mecab_t *mecab = Mecab_val(ml_mecab);
@@ -241,7 +241,7 @@ mecab_sparse_tonode2_stub(value ml_mecab, value ml_str, value ml_len) {
 }
 
 CAMLprim value
-mecab_nbest_sparse_tostr_stub(value ml_mecab, value ml_n, value ml_str) {
+ml_mecab_nbest_sparse_tostr(value ml_mecab, value ml_n, value ml_str) {
   CAMLparam3(ml_mecab, ml_n, ml_str);
 
   mecab_t *mecab = Mecab_val(ml_mecab);
@@ -253,7 +253,7 @@ mecab_nbest_sparse_tostr_stub(value ml_mecab, value ml_n, value ml_str) {
 }
 
 CAMLprim value
-mecab_nbest_sparse_tostr2_stub(value ml_mecab, value ml_n, value ml_str, value ml_len) {
+ml_mecab_nbest_sparse_tostr2(value ml_mecab, value ml_n, value ml_str, value ml_len) {
   CAMLparam4(ml_mecab, ml_n, ml_str, ml_len);
 
   mecab_t *mecab = Mecab_val(ml_mecab);
@@ -265,7 +265,7 @@ mecab_nbest_sparse_tostr2_stub(value ml_mecab, value ml_n, value ml_str, value m
 }
 
 CAMLprim value
-mecab_nbest_init_stub(value ml_mecab, value ml_str) {
+ml_mecab_nbest_init(value ml_mecab, value ml_str) {
   CAMLparam2(ml_mecab, ml_str);
 
   mecab_t *mecab = Mecab_val(ml_mecab);
@@ -276,7 +276,7 @@ mecab_nbest_init_stub(value ml_mecab, value ml_str) {
 }
 
 CAMLprim value
-mecab_nbest_init2_stub(value ml_mecab, value ml_str, value ml_len) {
+ml_mecab_nbest_init2(value ml_mecab, value ml_str, value ml_len) {
   CAMLparam3(ml_mecab, ml_str, ml_len);
 
   mecab_t *mecab = Mecab_val(ml_mecab);
@@ -287,7 +287,7 @@ mecab_nbest_init2_stub(value ml_mecab, value ml_str, value ml_len) {
 }
 
 CAMLprim value
-mecab_nbest_next_tostr_stub(value ml_mecab) {
+ml_mecab_nbest_next_tostr(value ml_mecab) {
   CAMLparam1(ml_mecab);
 
   mecab_t *mecab = Mecab_val(ml_mecab);
@@ -298,7 +298,7 @@ mecab_nbest_next_tostr_stub(value ml_mecab) {
 }
 
 CAMLprim value
-mecab_nbest_next_tonode_stub(value ml_mecab) {
+ml_mecab_nbest_next_tonode(value ml_mecab) {
   CAMLparam1(ml_mecab);
 
   mecab_t *mecab = Mecab_val(ml_mecab);
