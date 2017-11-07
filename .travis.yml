@@ -1,0 +1,103 @@
+language: c
+dist: trusty
+
+cache:
+  - apt: true
+  - bundler: false
+  - directories:
+      - $HOME/.local
+      - $HOME/.opam
+      - $HOME/Library/Caches/Homebrew
+
+addons:
+  apt:
+    packages:
+      - m4
+      - git
+      - rsync
+      - aspcud
+      - mecab
+      - libmecab-dev
+      - mecab-ipadic-utf8
+
+env:
+  global:
+    - PATH=$PATH:$HOME/.local/usr/bin:$HOME/.local/usr/local/bin
+    - CPATH=$CPATH:$HOME/.local/usr/include:$HOME/.local/usr/local/include
+    - LIBRARY_PATH=$LIBRARY_PATH:$HOME/.local/usr/lib:$HOME/.local/usr/local/lib
+    - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.local/usr/lib:$HOME/.local/usr/local/lib
+
+matrix:
+  include:
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.03.0
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.04.2
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.05.0 GH_PAGES=1
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.06.0
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.07.0+trunk
+    - os: osx
+      osx_image: xcode7.3
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.05.0
+  allow_failures:
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.06.0
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.07.0+trunk
+
+before_script:
+  - |
+    if type brew; then
+      brew update && \
+      brew install m4 && \
+      if ! type mecab; then
+        curl 'https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE' -Lo mecab-0.996.tar.gz && \
+        curl 'https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM' -Lo mecab-ipadic-2.7.0-20070801.tar.gz && \
+        tar zxvf mecab-0.996.tar.gz && \
+        tar zxvf mecab-ipadic-2.7.0-20070801.tar.gz && \
+        ( cd mecab-0.996 && \
+          ./configure --prefix=$HOME/.local/usr --with-charset=utf8 && \
+          make && make check && make install) && \
+        ( cd mecab-ipadic-2.7.0-20070801 && \
+          ./configure --prefix=$HOME/.local/usr --with-charset=utf8 && \
+          make && make install)
+      fi
+    fi
+  - |
+    if ! type opam; then
+      mkdir -p $HOME/.local/usr/bin && \
+      curl "https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-$(uname -m)-$(uname -s)" -Lo $HOME/.local/usr/bin/opam && \
+      chmod 755 $HOME/.local/usr/bin/opam && \
+      opam init -a -y --comp $OCAML_VERSION
+    fi
+  - eval $(opam config env)
+  - opam update
+  - opam install -y ocamlfind 'ounit>=2.0.0' re odoc
+
+script:
+  - opam lint mecab.opam
+  - opam pin add -y mecab . --verbose
+  - ocamlfind query mecab # Check whether ocaml-mecab is installed, or not.
+  - jbuilder runtest --verbose
+  - opam remove mecab
+
+  # Build API documentation
+  - |
+    if [[ "$TRAVIS_PULL_REQUEST" == false ]] && [[ "$TRAVIS_BRANCH" == master ]] && [[ -n "$GH_PAGES" ]]; then
+      jbuilder build @doc
+      git clone https://$GITHUB_TOKEN@github.com/akabe/ocaml-mecab.git -b gh-pages gh-pages
+
+      rm -rf gh-pages/api
+      cp *.md gh-pages/
+      cp -r _build/default/_doc gh-pages/api
+
+      cd gh-pages
+      git add *.md api
+      git commit --author='Travis CI <travis-ci@example.com>' -m 'Update documentation'
+      git push origin gh-pages
+    else
+      echo -e "\033[33mSkip API documentation builds...\033[0m"
+    fi
