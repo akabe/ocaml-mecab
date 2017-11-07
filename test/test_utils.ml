@@ -20,12 +20,19 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE. *)
 
-open OUnit2
-
-let suite =
-  "Mecab" >::: [
-    Test_tagger.suite;
-    Test_unicode.suite;
-  ]
-
-let () = run_test_tt_main suite
+let int = string_of_int
+let bool = string_of_bool
+let float = string_of_float
+let string str =
+  let b = Buffer.create 16 in
+  Buffer.add_char b '\"' ;
+  String.iter
+    (function
+      | '\n' -> Buffer.add_string b "\\n"
+      | '\r' -> Buffer.add_string b "\\r"
+      | '\t' -> Buffer.add_string b "\\t"
+      | '\"' -> Buffer.add_string b "\\\""
+      | c -> Buffer.add_char b c)
+    str ;
+  Buffer.add_char b '\"' ;
+  Buffer.contents b

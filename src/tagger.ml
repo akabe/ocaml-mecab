@@ -20,7 +20,7 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** MeCab is a part-of-speech and morphological analyzer. *)
+(** The core module for part-of-speech and morphological analysis. *)
 
 open Sexplib.Std
 
