@@ -83,7 +83,6 @@ script:
   - ocamlfind query mecab # Check whether ocaml-mecab is installed, or not.
   - jbuilder runtest --verbose
   - opam remove mecab
-
   # Build API documentation
   - |
     if [[ "$TRAVIS_PULL_REQUEST" == false ]] && [[ "$TRAVIS_BRANCH" == master ]] && [[ -n "$GH_PAGES" ]]; then
