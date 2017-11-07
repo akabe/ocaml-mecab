@@ -30,4 +30,4 @@ Note that `brew install mecab` (Mac OS X) is **prohibited** because the version 
 
 # Documentation
 
-- API documentation: [https://akabe.github.io/ocaml-mecab/](https://akabe.github.io/ocaml-mecab/)
+- API documentation: [https://akabe.github.io/ocaml-mecab/api/](https://akabe.github.io/ocaml-mecab/api/)
