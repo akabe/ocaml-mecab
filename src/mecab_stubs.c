@@ -95,9 +95,9 @@ static value ml_mecab_create_or_die(mecab_t * mecab) {
     const char *msg = mecab_strerror(mecab);
     if (msg == NULL || strcmp(msg, "") == 0) {
       caml_failwith("Cannot create MeCab object");
-	} else {
+    } else {
       caml_failwith(msg);
-	}
+    }
   }
 
   CAMLreturn(caml_copy_custom(mecab, &mecab_ops));
@@ -176,10 +176,10 @@ CAMLprim value ml_mecab_sparse_tostr(value ml_mecab, value ml_pos, value ml_len,
   if (ml_pos != Val_none) str += Int_val(Some_val(ml_pos));
 
   if (ml_len == Val_none) {
-	res = mecab_sparse_tostr(mecab, str);
+    res = mecab_sparse_tostr(mecab, str);
   } else {
-	int len = Int_val(Some_val(ml_len));
-	res = mecab_sparse_tostr2(mecab, str, len);
+    int len = Int_val(Some_val(ml_len));
+    res = mecab_sparse_tostr2(mecab, str, len);
   }
 
   if (res == NULL) caml_failwith(mecab_strerror(mecab));
@@ -197,10 +197,10 @@ CAMLprim value ml_mecab_sparse_tonode(value ml_mecab, value ml_pos, value ml_len
   if (ml_pos != Val_none) str += Int_val(Some_val(ml_pos));
 
   if (ml_len == Val_none) {
-	node = mecab_sparse_tonode(mecab, str);
+    node = mecab_sparse_tonode(mecab, str);
   } else {
-	int len = Int_val(Some_val(ml_len));
-	node = mecab_sparse_tonode2(mecab, str, len);
+    int len = Int_val(Some_val(ml_len));
+    node = mecab_sparse_tonode2(mecab, str, len);
   }
 
   if (node == NULL) caml_failwith(mecab_strerror(mecab));
@@ -217,10 +217,10 @@ CAMLprim value ml_mecab_nbest_sparse_tostr(value ml_mecab, value ml_n, value ml_
   if (ml_pos != Val_none) str += Int_val(Some_val(ml_pos));
 
   if (ml_len == Val_none) {
-	res = mecab_nbest_sparse_tostr(mecab, Int_val(ml_n), str);
+    res = mecab_nbest_sparse_tostr(mecab, Int_val(ml_n), str);
   } else {
-	int len = Int_val(Some_val(ml_len));
-	res = mecab_nbest_sparse_tostr2(mecab, Int_val(ml_n), str, len);
+    int len = Int_val(Some_val(ml_len));
+    res = mecab_nbest_sparse_tostr2(mecab, Int_val(ml_n), str, len);
   }
 
   if (res == NULL) caml_failwith(mecab_strerror(mecab));
@@ -238,10 +238,10 @@ CAMLprim value ml_mecab_nbest_init(value ml_mecab, value ml_pos, value ml_len, v
   if (ml_pos != Val_none) str += Int_val(Some_val(ml_pos));
 
   if (ml_len == Val_none) {
-	res = mecab_nbest_init(mecab, str);
+    res = mecab_nbest_init(mecab, str);
   } else {
-	int len = Int_val(Some_val(ml_len));
-	res = mecab_nbest_init2(mecab, str, len);
+    int len = Int_val(Some_val(ml_len));
+    res = mecab_nbest_init2(mecab, str, len);
   }
 
   if (!res) caml_failwith(mecab_strerror(mecab));

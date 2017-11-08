@@ -12,4 +12,4 @@
 					-short-paths -no-alias-deps))
   (c_names         (mecab_stubs))
   (c_flags         (-std=c99 -Wall -g -fPIC -DPIC -O3 -march=native))
-  (c_library_flags (-lmecab))))
+  (c_library_flags (-L/usr/local/lib -lmecab))))
