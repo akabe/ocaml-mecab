@@ -20,13 +20,34 @@ The official documentation (written in Japanese) is published at [MeCab: Yet Ano
 
 # Getting started
 
-Install the latest snapshot:
+Install the latest-released version by
 
 ```
-opam pin add mecab .
+opam install mecab
 ```
 
-Note that `brew install mecab` (Mac OS X) is **prohibited** because the version of Homebrew MeCab library is too old to install this binding. You should use `opam depext mecab` or manually build from the [MeCab source code][MeCab-ja].
+or the latest snapshot by `opam pin add mecab .`.
+
+You can parse a sentense as follows:
+
+```ocaml
+# #require "mecab" ;;
+
+# let mecab = Mecab.Tagger.create [|""|];;
+val mecab : Mecab.Tagger.t = <abstr>
+
+# Mecab.Tagger.sparse_tostr mecab "すもももももももものうち" |> print_endline;;
+すもも	名詞,一般,*,*,*,*,すもも,スモモ,スモモ
+も	助詞,係助詞,*,*,*,*,も,モ,モ
+もも	名詞,一般,*,*,*,*,もも,モモ,モモ
+も	助詞,係助詞,*,*,*,*,も,モ,モ
+もも	名詞,一般,*,*,*,*,もも,モモ,モモ
+の	助詞,連体化,*,*,*,*,の,ノ,ノ
+うち	名詞,非自立,副詞可能,*,*,*,うち,ウチ,ウチ
+EOS
+
+- : unit = ()
+```
 
 # Documentation
 
