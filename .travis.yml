@@ -22,10 +22,7 @@ addons:
 
 env:
   global:
-    - PATH=$PATH:$HOME/.local/usr/bin:$HOME/.local/usr/local/bin
-    - CPATH=$CPATH:$HOME/.local/usr/include:$HOME/.local/usr/local/include
-    - LIBRARY_PATH=$LIBRARY_PATH:$HOME/.local/usr/lib:$HOME/.local/usr/local/lib
-    - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/.local/usr/lib:$HOME/.local/usr/local/lib
+    - PATH=$PATH:$HOME/.local/usr/bin
 
 matrix:
   include:
@@ -52,19 +49,7 @@ before_script:
   - |
     if type brew; then
       brew update && \
-      brew install m4 && \
-      if ! type mecab; then
-        curl 'https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE' -Lo mecab-0.996.tar.gz && \
-        curl 'https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM' -Lo mecab-ipadic-2.7.0-20070801.tar.gz && \
-        tar zxvf mecab-0.996.tar.gz && \
-        tar zxvf mecab-ipadic-2.7.0-20070801.tar.gz && \
-        ( cd mecab-0.996 && \
-          ./configure --prefix=$HOME/.local/usr --with-charset=utf8 && \
-          make && make check && make install) && \
-        ( cd mecab-ipadic-2.7.0-20070801 && \
-          ./configure --prefix=$HOME/.local/usr --with-charset=utf8 && \
-          make && make install)
-      fi
+      brew install m4 mecab mecab-ipadic
     fi
   - |
     if ! type opam; then
@@ -75,7 +60,7 @@ before_script:
     fi
   - eval $(opam config env)
   - opam update
-  - opam install -y ocamlfind 'ounit>=2.0.0' re odoc
+  - opam install -y ocamlfind 'ounit>=2.0.0' re
 
 script:
   - opam lint mecab.opam
@@ -86,6 +71,7 @@ script:
   # Build API documentation
   - |
     if [[ "$TRAVIS_PULL_REQUEST" == false ]] && [[ "$TRAVIS_BRANCH" == master ]] && [[ -n "$GH_PAGES" ]]; then
+      opam install -y odoc
       jbuilder build @doc
       git clone https://$GITHUB_TOKEN@github.com/akabe/ocaml-mecab.git -b gh-pages gh-pages
 
