@@ -20,9 +20,12 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE. *)
 
+open Sexplib.Std
+
 let int = string_of_int
 let bool = string_of_bool
 let float = string_of_float
+
 let string str =
   let b = Buffer.create 16 in
   Buffer.add_char b '\"' ;
@@ -36,3 +39,11 @@ let string str =
     str ;
   Buffer.add_char b '\"' ;
   Buffer.contents b
+
+let string_option = function
+  | None -> "None"
+  | Some s -> "Some " ^ string s
+
+let request_type_list lst =
+  [%sexp_of: Mecab.Lattice.request_type list] lst
+  |> Sexplib.Sexp.to_string

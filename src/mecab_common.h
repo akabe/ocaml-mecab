@@ -29,12 +29,15 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 
+#define MECAB_REQUEST_TYPE_BITS 6
+
 // `Type_val(v, T)` return a pointer of type `T` from a OCaml-style value `v`.
 #define Type_val(v, type) (*((type **) Data_custom_val(v)))
 
 #define Val_none Val_int(0)
 #define Some_val(v) Field(v, 0)
 #define Mecab_val(v) Type_val(v, mecab_t)
+#define Mecab_lattice_val(v) Type_val(v, mecab_lattice_t)
 
 static inline value
 Val_some(value v) {

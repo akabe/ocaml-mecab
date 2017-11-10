@@ -21,59 +21,7 @@
    SOFTWARE. */
 
 #include "mecab_common.h"
-
-enum {
-  MECAB_NODE_FIELD_SURFACE = 0,
-  MECAB_NODE_FIELD_FEATURE,
-  MECAB_NODE_FIELD_ID,
-  MECAB_NODE_FIELD_RC_ATTR,
-  MECAB_NODE_FIELD_LC_ATTR,
-  MECAB_NODE_FIELD_POSID,
-  MECAB_NODE_FIELD_CHAR_TYPE,
-  MECAB_NODE_FIELD_STAT,
-  MECAB_NODE_FIELD_ISBEST,
-  MECAB_NODE_FIELD_ALPHA,
-  MECAB_NODE_FIELD_BETA,
-  MECAB_NODE_FIELD_PROB,
-  MECAB_NODE_FIELD_WCOST,
-  MECAB_NODE_FIELD_COST,
-  MECAB_NODE_N_FIELDS
-};
-
-static value caml_copy_mecab_node(const mecab_node_t *node) {
-  CAMLparam0();
-  CAMLlocal3(ml_head, ml_tail, ml_node);
-
-  if (node == NULL) {
-    return Val_emptylist;
-  } else {
-    while (node->next) node = node->next; // move to the last node.
-
-    for (ml_head = Val_emptylist; node != NULL; node = node->prev, ml_tail = ml_head) {
-      ml_node = caml_alloc(MECAB_NODE_N_FIELDS, 0);
-      Store_field(ml_node, MECAB_NODE_FIELD_SURFACE, caml_copy_substring(node->surface, node->length));
-      Store_field(ml_node, MECAB_NODE_FIELD_FEATURE, caml_copy_string(node->feature));
-      Store_field(ml_node, MECAB_NODE_FIELD_ID, Val_int(node->id));
-      Store_field(ml_node, MECAB_NODE_FIELD_RC_ATTR, Val_int(node->rcAttr));
-      Store_field(ml_node, MECAB_NODE_FIELD_LC_ATTR, Val_int(node->lcAttr));
-      Store_field(ml_node, MECAB_NODE_FIELD_POSID, Val_int(node->posid));
-      Store_field(ml_node, MECAB_NODE_FIELD_CHAR_TYPE, Val_int(node->char_type));
-      Store_field(ml_node, MECAB_NODE_FIELD_STAT, Val_int(node->stat));
-      Store_field(ml_node, MECAB_NODE_FIELD_ISBEST, Val_bool(node->isbest));
-      Store_field(ml_node, MECAB_NODE_FIELD_ALPHA, caml_copy_double(node->alpha));
-      Store_field(ml_node, MECAB_NODE_FIELD_BETA, caml_copy_double(node->beta));
-      Store_field(ml_node, MECAB_NODE_FIELD_PROB, caml_copy_double(node->prob));
-      Store_field(ml_node, MECAB_NODE_FIELD_WCOST, Val_int(node->wcost));
-      Store_field(ml_node, MECAB_NODE_FIELD_COST, Val_int(node->cost));
-
-      ml_head = caml_alloc(2, 0);
-      Store_field(ml_head, 0, ml_node);
-      Store_field(ml_head, 1, ml_tail);
-    }
-
-    CAMLreturn(ml_head);
-  }
-}
+#include "mecab_node.h"
 
 static void ml_mecab_finalize(value ml_mecab) {
   mecab_destroy(Mecab_val(ml_mecab));
@@ -205,7 +153,7 @@ CAMLprim value ml_mecab_sparse_tonode(value ml_mecab, value ml_pos, value ml_len
 
   if (node == NULL) caml_failwith(mecab_strerror(mecab));
 
-  CAMLreturn(caml_copy_mecab_node(node));
+  CAMLreturn(caml_copy_mecab_node_list(node));
 }
 
 CAMLprim value ml_mecab_nbest_sparse_tostr(value ml_mecab, value ml_n, value ml_pos, value ml_len, value ml_str) {
@@ -266,7 +214,15 @@ CAMLprim value ml_mecab_nbest_next_tonode(value ml_mecab) {
   const mecab_node_t *node = mecab_nbest_next_tonode(mecab);
   if (node == NULL) caml_failwith(mecab_strerror(mecab));
 
-  CAMLreturn(caml_copy_mecab_node(node));
+  CAMLreturn(caml_copy_mecab_node_list(node));
+}
+
+CAMLprim value ml_mecab_parse_lattice(value ml_mecab, value ml_lattice) {
+  CAMLparam2(ml_mecab, ml_lattice);
+
+  mecab_t *mecab = Mecab_val(ml_mecab);
+  mecab_lattice_t *lattice = Mecab_lattice_val(ml_lattice);
+  CAMLreturn(Val_bool(mecab_parse_lattice(mecab, lattice)));
 }
 
 enum {
@@ -282,24 +238,25 @@ enum {
 
 CAMLprim value mecab_dictionary_info_stub(value ml_mecab) {
   CAMLparam1(ml_mecab);
-  CAMLlocal3(ml_head, ml_tail, ml_node);
+  CAMLlocal3(ml_head, ml_tail, ml_dic);
 
   mecab_t *mecab = Mecab_val(ml_mecab);
   const mecab_dictionary_info_t *di = mecab_dictionary_info(mecab);
 
-  for (ml_head = Val_emptylist; di != NULL; di = di->next, ml_tail = ml_head) {
-    ml_node = caml_alloc(MECAB_DI_N_FIELDS, 0);
-    Store_field(ml_node, MECAB_DI_FIELD_FILENAME, caml_copy_string(di->filename));
-    Store_field(ml_node, MECAB_DI_FIELD_CHARSET, caml_copy_string(di->charset));
-    Store_field(ml_node, MECAB_DI_FIELD_SIZE, Val_int(di->size));
-    Store_field(ml_node, MECAB_DI_FIELD_TYPE, Val_int(di->type));
-    Store_field(ml_node, MECAB_DI_FIELD_LSIZE, Val_int(di->lsize));
-    Store_field(ml_node, MECAB_DI_FIELD_RSIZE, Val_int(di->rsize));
-    Store_field(ml_node, MECAB_DI_FIELD_VERSION, Val_int(di->version));
+  for (ml_head = Val_emptylist; di != NULL; di = di->next) {
+    ml_dic = caml_alloc(MECAB_DI_N_FIELDS, 0);
+    Store_field(ml_dic, MECAB_DI_FIELD_FILENAME, caml_copy_string(di->filename));
+    Store_field(ml_dic, MECAB_DI_FIELD_CHARSET, caml_copy_string(di->charset));
+    Store_field(ml_dic, MECAB_DI_FIELD_SIZE, Val_int(di->size));
+    Store_field(ml_dic, MECAB_DI_FIELD_TYPE, Val_int(di->type));
+    Store_field(ml_dic, MECAB_DI_FIELD_LSIZE, Val_int(di->lsize));
+    Store_field(ml_dic, MECAB_DI_FIELD_RSIZE, Val_int(di->rsize));
+    Store_field(ml_dic, MECAB_DI_FIELD_VERSION, Val_int(di->version));
 
     ml_head = caml_alloc(2, 0);
-    Store_field(ml_head, 0, ml_node);
+    Store_field(ml_head, 0, ml_dic);
     Store_field(ml_head, 1, ml_tail);
+    ml_tail = ml_head;
   }
 
   CAMLreturn(ml_head);

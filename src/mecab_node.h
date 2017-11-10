@@ -1,4 +1,4 @@
-(* MeCab --- A MeCab binding for OCaml
+/* MeCab --- A MeCab binding for OCaml
 
    Copyright (c) 2017 Akinori ABE
 
@@ -18,14 +18,11 @@
    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   SOFTWARE. *)
+   SOFTWARE. */
 
-(** MeCab is a part-of-speech and morphological analyzer. *)
+#include <mecab.h>
+#include <caml/mlvalues.h>
 
-module Tagger = Mecab__Tagger
+extern value caml_copy_mecab_node(const mecab_node_t *);
 
-module Node = Mecab__Node
-
-module Lattice = Mecab__Lattice
-
-module Unicode = Mecab__Unicode
+extern value caml_copy_mecab_node_list(const mecab_node_t *);
