@@ -247,7 +247,7 @@ CAMLprim value ml_mecab_lattice_to_node(value ml_lattice) {
 CAMLprim value ml_mecab_lattice_nbest_to_string(value ml_lattice, value ml_nbest) {
   CAMLparam2(ml_lattice, ml_nbest);
   mecab_lattice_t *lattice = Mecab_lattice_val(ml_lattice);
-  if (mecab_lattice_get_bos_node(lattice) != NULL) {
+  if (mecab_lattice_is_available(lattice) && mecab_lattice_get_bos_node(lattice) != NULL) {
     CAMLreturn(Val_some(caml_copy_string(mecab_lattice_nbest_tostr(lattice, Int_val(ml_nbest)))));
   } else {
     CAMLreturn(Val_none);

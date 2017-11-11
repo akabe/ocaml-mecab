@@ -30,10 +30,10 @@ let check_node_list ~ctxt expected nodes =
   let actual =
     List.map (fun v -> v.Node.surface) nodes
     |> String.concat "" in
-  assert_equal ~printer:string ~ctxt expected actual ;
+  require_str ~ctxt expected actual ;
   List.iter
     (fun node ->
-       assert_equal ~printer:string ~cmp:(<>) ~ctxt "" node.Node.feature)
+       require_str ~cmp:(<>) ~ctxt "" node.Node.feature)
     nodes
 
 let eos_bos = ["", "BOS/EOS,*,*,*,*,*,*,*,*"]
@@ -58,36 +58,36 @@ let test_version ctxt =
   let cmp re s = Re.execp (Re_perl.compile_pat re) s in
   let expected = "[0-9]+\\.[0-9]+" in
   let actual = Tagger.version () in
-  assert_equal ~cmp ~printer:string ~ctxt expected actual
+  require_str ~cmp ~ctxt expected actual
 
 let test_create ctxt =
   let mecab = Tagger.create [|""|] in
-  assert_equal ~cmp:(<>) ~printer:int ~ctxt 0 (Obj.magic mecab)
+  require_int ~cmp:(<>) ~ctxt 0 (Obj.magic mecab)
 
 let test_create2 ctxt =
   let mecab = Tagger.create2 " " in
-  assert_equal ~cmp:(<>) ~printer:int ~ctxt 0 (Obj.magic mecab)
+  require_int ~cmp:(<>) ~ctxt 0 (Obj.magic mecab)
 
 let test_get_set_partial ctxt =
   let mecab = Tagger.create [|""|] in
   Tagger.set_partial mecab true ;
-  assert_equal ~printer:bool ~ctxt true (Tagger.get_partial mecab) ;
+  require_bool ~ctxt true (Tagger.get_partial mecab) ;
   Tagger.set_partial mecab false ;
-  assert_equal ~printer:bool ~ctxt false (Tagger.get_partial mecab)
+  require_bool ~ctxt false (Tagger.get_partial mecab)
 
 let test_get_set_theta ctxt =
   let mecab = Tagger.create [|""|] in
   Tagger.set_theta mecab 9.0 ;
-  assert_equal ~printer:float ~ctxt 9.0 (Tagger.get_theta mecab) ;
+  require_float ~ctxt 9.0 (Tagger.get_theta mecab) ;
   Tagger.set_theta mecab 1.0 ;
-  assert_equal ~printer:float ~ctxt 1.0 (Tagger.get_theta mecab)
+  require_float ~ctxt 1.0 (Tagger.get_theta mecab)
 
 let test_get_set_all_morphs ctxt =
   let mecab = Tagger.create [|""|] in
   Tagger.set_all_morphs mecab true ;
-  assert_equal ~printer:bool ~ctxt true (Tagger.get_all_morphs mecab) ;
+  require_bool ~ctxt true (Tagger.get_all_morphs mecab) ;
   Tagger.set_all_morphs mecab false ;
-  assert_equal ~printer:bool ~ctxt false (Tagger.get_all_morphs mecab)
+  require_bool ~ctxt false (Tagger.get_all_morphs mecab)
 
 let test_get_set_lattice_level ctxt =
   let mecab = Tagger.create2 " -l1" in
@@ -99,13 +99,13 @@ let test_get_set_lattice_level ctxt =
 let test_sparse_tostr ctxt =
   let mecab = Tagger.create [|""|] in
   let actual = Tagger.sparse_tostr mecab "すもももももももものうち" in
-  assert_equal ~printer:string ~ctxt expected_tostr_1 actual ;
+  require_str ~ctxt expected_tostr_1 actual ;
   let actual = Tagger.sparse_tostr mecab ~pos:6 "。。すもももももももものうち" in
-  assert_equal ~printer:string ~ctxt expected_tostr_1 actual ;
+  require_str ~ctxt expected_tostr_1 actual ;
   let actual = Tagger.sparse_tostr mecab ~len:36 "すもももももももものうち。。" in
-  assert_equal ~printer:string ~ctxt expected_tostr_1 actual ;
+  require_str ~ctxt expected_tostr_1 actual ;
   let actual = Tagger.sparse_tostr mecab ~pos:6 ~len:36 "。。すもももももももものうち。。" in
-  assert_equal ~printer:string ~ctxt expected_tostr_1 actual
+  require_str ~ctxt expected_tostr_1 actual
 
 let test_sparse_tonode ctxt =
   let mecab = Tagger.create [|""|] in
@@ -122,28 +122,28 @@ let test_sparse_tonode ctxt =
 let test_nbest_sparse_tostr ctxt =
   let mecab = Tagger.create [|""|] in
   let actual = Tagger.nbest_sparse_tostr mecab ~n:1 "すもももももももものうち" in
-  assert_equal ~printer:string ~ctxt expected_tostr_1 actual ;
+  require_str ~ctxt expected_tostr_1 actual ;
   let actual = Tagger.nbest_sparse_tostr mecab ~n:1 ~pos:6 "。。すもももももももものうち" in
-  assert_equal ~printer:string ~ctxt expected_tostr_1 actual ;
+  require_str ~ctxt expected_tostr_1 actual ;
   let actual = Tagger.nbest_sparse_tostr mecab ~n:1 ~len:36 "すもももももももものうち。。" in
-  assert_equal ~printer:string ~ctxt expected_tostr_1 actual ;
+  require_str ~ctxt expected_tostr_1 actual ;
   let actual = Tagger.nbest_sparse_tostr mecab ~n:1 ~pos:6 ~len:36 "。。すもももももももものうち。。" in
-  assert_equal ~printer:string ~ctxt expected_tostr_1 actual
+  require_str ~ctxt expected_tostr_1 actual
 
 let test_nbest_next_tostr ctxt =
   let mecab = Tagger.create [|""|] in
   Tagger.nbest_init mecab "すもももももももものうち" ;
   let actual = Tagger.nbest_next_tostr mecab in
-  assert_equal ~printer:string ~ctxt expected_tostr_1 actual ;
+  require_str ~ctxt expected_tostr_1 actual ;
   Tagger.nbest_init mecab ~pos:6 "。。すもももももももものうち" ;
   let actual = Tagger.nbest_next_tostr mecab in
-  assert_equal ~printer:string ~ctxt expected_tostr_1 actual ;
+  require_str ~ctxt expected_tostr_1 actual ;
   Tagger.nbest_init mecab ~len:36 "すもももももももものうち。。" ;
   let actual = Tagger.nbest_next_tostr mecab in
-  assert_equal ~printer:string ~ctxt expected_tostr_1 actual ;
+  require_str ~ctxt expected_tostr_1 actual ;
   Tagger.nbest_init mecab ~pos:6 ~len:36 "。。すもももももももものうち。。" ;
   let actual = Tagger.nbest_next_tostr mecab in
-  assert_equal ~printer:string ~ctxt expected_tostr_1 actual
+  require_str ~ctxt expected_tostr_1 actual
 
 let test_nbest_next_tonode ctxt =
   let mecab = Tagger.create [|""|] in
@@ -164,11 +164,11 @@ let test_nbest_next_tonode ctxt =
 let test_parse_lattice ctxt =
   let mecab = Tagger.create [|""|] in
   let lat = Lattice.create () in
-  assert_equal ~printer:bool ~ctxt false (Tagger.parse_lattice mecab lat) ;
+  require_bool ~ctxt false (Tagger.parse_lattice mecab lat) ;
   Lattice.set_sentense lat "すもももももももものうち" ;
-  assert_equal ~printer:bool ~ctxt true (Tagger.parse_lattice mecab lat) ;
+  require_bool ~ctxt true (Tagger.parse_lattice mecab lat) ;
   let actual = Lattice.to_string lat in
-  assert_equal ~printer:string_option ~ctxt (Some expected_tostr_1) actual
+  require_str_opt ~ctxt (Some expected_tostr_1) actual
 
 let suite =
   "Tagger" >::: [
