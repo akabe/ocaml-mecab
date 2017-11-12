@@ -118,11 +118,6 @@ CAMLprim value ml_mecab_create2(value ml_argv) {
   CAMLreturn(ml_mecab_create_or_die(mecab_new2(String_val(ml_argv))));
 }
 
-CAMLprim value ml_mecab_strerror(value ml_mecab) {
-  CAMLparam1(ml_mecab);
-  CAMLreturn(caml_copy_string(mecab_strerror(Mecab_val(ml_mecab))));
-}
-
 CAMLprim value ml_mecab_get_partial(value ml_mecab) {
   CAMLparam1(ml_mecab);
   CAMLreturn(Val_bool(mecab_get_partial(Mecab_val(ml_mecab))));
@@ -280,7 +275,7 @@ enum {
   MECAB_DI_N_FIELDS
 };
 
-CAMLprim value mecab_dictionary_info_stub(value ml_mecab) {
+CAMLprim value ml_mecab_dictionary_info_stub(value ml_mecab) {
   CAMLparam1(ml_mecab);
   CAMLlocal3(ml_head, ml_tail, ml_node);
 
