@@ -21,9 +21,17 @@
     SOFTWARE. *)
 
 open OUnit2
+open Test_utils
+
+let test_version ctxt =
+  let cmp re s = Re.execp (Re_perl.compile_pat re) s in
+  let expected = "[0-9]+\\.[0-9]+" in
+  let actual = Mecab.version () in
+  assert_equal ~cmp ~printer:string ~ctxt expected actual
 
 let suite =
   "Mecab" >::: [
+    "version" >:: test_version;
     Test_tagger.suite;
     Test_unicode.suite;
   ]

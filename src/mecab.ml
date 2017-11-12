@@ -25,5 +25,12 @@
 (** The core module for part-of-speech and morphological analysis. *)
 module Tagger = Mecab__Tagger
 
+(** Parsing results *)
+module Node = Mecab__Node
+
 (** Utilities for text normalization. *)
 module Unicode = Mecab__Unicode
+
+(** @return the version of libmecab. *)
+external version : unit -> string
+  = "ml_mecab_version"
